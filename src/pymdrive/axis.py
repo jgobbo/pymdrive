@@ -78,11 +78,11 @@ class MdriveAxis:
         response = await self._write_read("PR A")
         return int(response)
 
-    async def move_absolute(self, position: int, speed: int = None) -> None:
+    async def move_absolute(self, position: int) -> None:
         assert isinstance(position, int)
         await self._write(f"MA {position}")
 
-    async def move_relative(self, movement: int, speed: int = None) -> None:
+    async def move_relative(self, movement: int) -> None:
         assert isinstance(movement, int)
         await self._write(f"MR {movement}")
 
@@ -112,4 +112,4 @@ class MdriveAxis:
 
 def emergency_stop(comm: "MdriveComm") -> None:
     """Stop all axes immediately."""
-    comm._write(chr(27))
+    comm._synchronous_write(chr(27))
