@@ -26,16 +26,18 @@ class MdriveAxis:
         self.name = name
 
     def _synchronous_write(self, command: str) -> None:
-        self.comm._synchronous_write(f"{self.name}{command}")
+        self.comm.synchronous_write(f"{self.name}{command}")
 
-    async def _write(self, command: str) -> None:
-        await self.comm._write(f"{self.name}{command}")
+    async def _write(self, command: str, timeout: float | None = 5.0) -> None:
+        await self.comm.write(f"{self.name}{command}", timeout)
 
-    async def _write_read(self, command: str) -> str:
-        return await self.comm._write_read(f"{self.name}{command}")
+    async def _write_read(self, command: str, timeout: float | None = 5.0) -> str:
+        return await self.comm.write_read(f"{self.name}{command}", timeout)
 
-    async def _write_read_multiline(self, command: str) -> str:
-        return await self.comm._write_read_multiline(f"{self.name}{command}")
+    async def _write_read_multiline(
+        self, command: str, timeout: float | None = 5.0
+    ) -> list[str]:
+        return await self.comm.write_read_multiline(f"{self.name}{command}", timeout)
 
     def enable(self) -> None:
         self._synchronous_write("DE=1")
@@ -112,4 +114,4 @@ class MdriveAxis:
 
 def emergency_stop(comm: "MdriveComm") -> None:
     """Stop all axes immediately."""
-    comm._synchronous_write(chr(27))
+    comm.synchronous_write(chr(27))
